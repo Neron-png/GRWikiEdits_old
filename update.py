@@ -3,6 +3,7 @@ import json
 import re
 from datetime import date
 import time
+import tweepy
 
 
 
@@ -12,6 +13,16 @@ strToday = date.today()
 d8 = strToday.strftime("%Y-%m-%d")
 #d8 = today's date
 
+#Twitter keys
+CONSUMER_KEY = '<YOUR TWITTER API KEY>'
+CONSUMER_SECRET = '<YOUR TWITTER API SECRET KEY>'
+ACCESS_KEY = '<YOUR TWITTER ACCESS TOKEN>'
+ACCESS_SECRET = '<YOUR TWITTER API TOKEN KEY>'
+
+#Twitter auth & API
+auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+tw_api = tweepy.API(auth)
 
 
 #get last RevID
@@ -74,6 +85,9 @@ def getRev():
 
 def getArt():
     art = re.search('(?<="title": ")(.*)(?=",)', DATA).group()
+    
+    #Escape the double escaped unicode text
+    art = art.encode('utf-8').decode('unicode-escape')
     return art
 
 
@@ -90,15 +104,17 @@ while True:
         if updated:
             revid = getRev()
             article = getArt()
-            wikiURL = "https://en.wikipedia.org/w/index.php?diff=" + revid
-            print (wikiURL)
-            todaylist.append("Το άρθρο \"" + article + "\" υπέστη επεξεργασία από ανώνυμο άτομο της Βουλής. " + wikiURL)
+            wikiURL = "https://en.wikipedia.org/w/index.php?diff=" + revid 
+            
+            print (wikiURL) 
+            #Twitter Post content
+            PostCont = str("Το άρθρο \"" + article + "\" υπέστη επεξεργασία από ανώνυμο άτομο της Βουλής. " + wikiURL)
+            
+            
+            #Post to twitter:
+            tw_api.update_status(PostCont)
 
 
-    #Writes successful links's to file
-    with open('today_links.txt', 'w') as filehandle:
-        for listitem in todaylist:
-            filehandle.write('%s\n' % listitem)
 
 
     ######## TO BE REPLACED WITH TWITTER UPLOAD LINK
