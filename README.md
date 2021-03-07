@@ -1,3 +1,6 @@
+# ARCHIVED
+The old method of trying pinging IPs and checking for activity has ceased working, rendering this project dead in the water (for the time being)
+
 # What is GRWikiEdits ?
 
 GRWikiEdits is a script that goes through a [list of the IP addresses used by the Hellenic parliament](https://db-ip.com/all/195.251.32) and checks if any have made edits on wikipedia. 
